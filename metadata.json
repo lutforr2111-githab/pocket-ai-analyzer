@@ -1,0 +1,6 @@
+{
+  "name": "Pocket Option AI - Real Market Chart Analyzer",
+  "description": "AI-powered real & OTC market candlestick chart analyzer delivering actionable CALL/PUT trading signals, technical indicators, and pattern detection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
