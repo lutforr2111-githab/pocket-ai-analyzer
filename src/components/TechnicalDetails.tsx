@@ -43,7 +43,7 @@ export const TechnicalDetails: React.FC<TechnicalDetailsProps> = ({ result, lang
   }
 
   const copyToClipboard = () => {
-    const textToCopy = `⚡ POCKET OPTION AI TRADING SIGNAL ⚡
+    const textToCopy = `⚡ BINARY AI SIGNAL ⚡
 Direction: ${result.direction} (${result.action})
 Confidence: ${result.confidence}%
 Expiration: ${result.expiration}

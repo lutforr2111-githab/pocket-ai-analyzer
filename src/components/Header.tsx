@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-black tracking-wider text-white flex items-center gap-1.5">
-                POCKET OPTION <span className="text-emerald-400">AI</span>
+                BINARY AI <span className="text-emerald-400">SIGNAL</span>
               </h1>
               <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './components/Header';
+import { TradingViewChart } from './components/TradingViewChart';
 import { UploadPanel } from './components/UploadPanel';
 import { SignalCard } from './components/SignalCard';
 import { TechnicalDetails } from './components/TechnicalDetails';
@@ -8,7 +9,8 @@ import { PatternGuideModal } from './components/PatternGuideModal';
 import { RiskCalculatorModal } from './components/RiskCalculatorModal';
 import { AnalysisResult, AnalysisHistoryItem } from './types';
 import { Language, TRANSLATIONS } from './data/translations';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { POPULAR_SYMBOLS, TradingSymbol } from './data/symbols';
+import { AlertCircle, LineChart, UploadCloud, Zap } from 'lucide-react';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>(() => {
@@ -20,6 +22,8 @@ export default function App() {
     return localStorage.getItem('po_voice') === 'true';
   });
 
+  const [activeTab, setActiveTab] = useState<'tradingview' | 'upload'>('tradingview');
+  const [selectedSymbol, setSelectedSymbol] = useState<TradingSymbol>(POPULAR_SYMBOLS[0]);
   const [timeframe, setTimeframe] = useState<string>('1 minute');
   const [market, setMarket] = useState<string>('Real Market');
   const [strategy, setStrategy] = useState<string>('Scalping (1-3 min)');
@@ -27,6 +31,8 @@ export default function App() {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const signalRef = useRef<HTMLDivElement>(null);
 
   const [history, setHistory] = useState<AnalysisHistoryItem[]>(() => {
     try {
@@ -62,10 +68,10 @@ export default function App() {
       let text = '';
       if (language === 'bn') {
         const dir = res.direction === 'UP' ? 'আপ কল বাই' : res.direction === 'DOWN' ? 'ডাউন পুট সেল' : 'নো ট্রেড অপেক্ষা করুন';
-        text = `পকেট অপশন এআই সিগন্যাল: ${dir}। কনফিডেন্স ${res.confidence} শতাংশ।`;
+        text = `বাইনারি এআই সিগন্যাল: ${dir}। কনফিডেন্স ${res.confidence} শতাংশ।`;
       } else {
         const dir = res.direction === 'UP' ? 'CALL UP BUY' : res.direction === 'DOWN' ? 'PUT DOWN SELL' : 'NO TRADE WAIT';
-        text = `Pocket Option AI Signal: ${dir}. Confidence ${res.confidence} percent. Expiry: ${res.expiration}.`;
+        text = `BINARY AI SIGNAL: ${dir}. Confidence ${res.confidence} percent. Expiry: ${res.expiration}.`;
       }
 
       const utterance = new SpeechSynthesisUtterance(text);
@@ -76,9 +82,7 @@ export default function App() {
     }
   };
 
-  const handleAnalyze = async () => {
-    if (!imageData) return;
-
+  const executeAnalysis = async (imgToAnalyze: string, assetName?: string) => {
     setIsAnalyzing(true);
     setError(null);
 
@@ -89,9 +93,9 @@ export default function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          image: imageData,
+          image: imgToAnalyze,
           timeframe,
-          market,
+          market: assetName || market,
           mode: strategy,
         }),
       });
@@ -109,16 +113,21 @@ export default function App() {
       const newHistoryItem: AnalysisHistoryItem = {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
-        asset: data.detectedAsset || market,
+        asset: data.detectedAsset || assetName || selectedSymbol.name,
         timeframe,
         market,
         direction: data.direction,
         confidence: data.confidence,
         pattern: data.pattern,
-        thumbnail: imageData,
+        thumbnail: imgToAnalyze,
       };
 
       setHistory((prev) => [newHistoryItem, ...prev.slice(0, 24)]);
+
+      // Scroll smoothly to the signal
+      setTimeout(() => {
+        signalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
     } catch (err: any) {
       console.error('Analysis failed:', err);
       setError(
@@ -127,6 +136,16 @@ export default function App() {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleAnalyze = () => {
+    if (!imageData) return;
+    executeAnalysis(imageData);
+  };
+
+  const handleAnalyzeLive = (snapshotDataUrl: string, symbol: TradingSymbol) => {
+    setImageData(snapshotDataUrl);
+    executeAnalysis(snapshotDataUrl, symbol.name);
   };
 
   const handleUpdateOutcome = (id: string, outcome: 'win' | 'loss' | 'tie' | 'skipped') => {
@@ -145,6 +164,7 @@ export default function App() {
     setImageData(item.thumbnail);
     setTimeframe(item.timeframe);
     setMarket(item.market);
+    setActiveTab('upload');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -167,7 +187,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6 relative z-10">
-        {/* Error notification banner if any */}
+        {/* Error notification banner */}
         {error && (
           <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start justify-between gap-3 animate-in fade-in">
             <div className="flex items-start gap-2.5">
@@ -175,11 +195,6 @@ export default function App() {
               <div>
                 <p className="font-bold text-rose-200">Analysis Error</p>
                 <p className="mt-0.5">{error}</p>
-                {error.includes('GEMINI_API_KEY') && (
-                  <p className="mt-2 text-slate-300">
-                    Tip: Ensure GEMINI_API_KEY is configured in your project settings.
-                  </p>
-                )}
               </div>
             </div>
             <button
@@ -191,30 +206,75 @@ export default function App() {
           </div>
         )}
 
-        {/* Top Control & Upload Area */}
-        <UploadPanel
-          language={language}
-          timeframe={timeframe}
-          setTimeframe={setTimeframe}
-          market={market}
-          setMarket={setMarket}
-          strategy={strategy}
-          setStrategy={setStrategy}
-          imageData={imageData}
-          setImageData={(data) => {
-            setImageData(data);
-            if (!data) setResult(null);
-          }}
-          isAnalyzing={isAnalyzing}
-          onAnalyze={handleAnalyze}
-        />
+        {/* View Mode Navigation Tabs */}
+        <div className="flex items-center justify-center sm:justify-start gap-2 border-b border-slate-800 pb-2">
+          <button
+            onClick={() => setActiveTab('tradingview')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'tradingview'
+                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
+                : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+            }`}
+          >
+            <LineChart className="w-4 h-4" />
+            <span>{t.liveTradingViewTab}</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-1" />
+          </button>
+
+          <button
+            onClick={() => setActiveTab('upload')}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'upload'
+                ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/20'
+                : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
+            }`}
+          >
+            <UploadCloud className="w-4 h-4" />
+            <span>{t.screenshotTab}</span>
+          </button>
+        </div>
+
+        {/* Tab 1: Live TradingView Chart View */}
+        {activeTab === 'tradingview' && (
+          <TradingViewChart
+            language={language}
+            selectedSymbol={selectedSymbol}
+            setSelectedSymbol={setSelectedSymbol}
+            timeframe={timeframe}
+            setTimeframe={setTimeframe}
+            isAnalyzing={isAnalyzing}
+            onAnalyzeLive={handleAnalyzeLive}
+          />
+        )}
+
+        {/* Tab 2: Upload / Paste Screenshot View */}
+        {activeTab === 'upload' && (
+          <UploadPanel
+            language={language}
+            timeframe={timeframe}
+            setTimeframe={setTimeframe}
+            market={market}
+            setMarket={setMarket}
+            strategy={strategy}
+            setStrategy={setStrategy}
+            imageData={imageData}
+            setImageData={(data) => {
+              setImageData(data);
+              if (!data) setResult(null);
+            }}
+            isAnalyzing={isAnalyzing}
+            onAnalyze={handleAnalyze}
+          />
+        )}
 
         {/* AI Trading Signal Result Card */}
-        <SignalCard
-          result={result}
-          isAnalyzing={isAnalyzing}
-          language={language}
-        />
+        <div ref={signalRef}>
+          <SignalCard
+            result={result}
+            isAnalyzing={isAnalyzing}
+            language={language}
+          />
+        </div>
 
         {/* Technical Breakdown Section */}
         <TechnicalDetails
@@ -239,9 +299,11 @@ export default function App() {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-400">
             <span>⚡ Institutional Grade Price Action</span>
             <span>•</span>
+            <span>📈 Real-time TradingView Candlestick Feeds</span>
+            <span>•</span>
             <span>🕯️ EMA 9/21 Dynamic Cross Detection</span>
             <span>•</span>
-            <span>🎯 00-Second Pocket Option Candle Synchronization</span>
+            <span>🎯 00-Second Binary Candle Synchronization</span>
           </div>
         </div>
       </main>

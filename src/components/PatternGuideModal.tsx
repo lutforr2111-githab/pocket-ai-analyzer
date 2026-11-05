@@ -28,7 +28,7 @@ export const PatternGuideModal: React.FC<PatternGuideModalProps> = ({ isOpen, on
                 {t.cheatSheetTab}
               </h3>
               <p className="text-xs text-slate-400">
-                High Win-Rate Pocket Option Price Action Candlestick Setups
+                High Win-Rate Binary Price Action Candlestick Setups
               </p>
             </div>
           </div>
@@ -82,8 +82,8 @@ export const PatternGuideModal: React.FC<PatternGuideModalProps> = ({ isOpen, on
                 <div className="mt-2 pt-2 border-t border-slate-800/60 bg-slate-900/40 rounded-lg p-2.5 text-[11px] text-emerald-300/90 flex items-start gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white">Pocket Option Tip: </strong>
-                    {item.pocketOptionTip}
+                    <strong className="text-white">Binary Signal Tip: </strong>
+                    {item.binarySignalTip}
                   </span>
                 </div>
               </div>

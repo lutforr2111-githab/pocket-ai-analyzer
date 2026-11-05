@@ -66,7 +66,7 @@ app.post('/api/analyze', async (req: Request, res: Response) => {
     }
 
     const promptText = `
-You are an elite, highly experienced technical analyst and binary options trading mentor specializing in Pocket Option price action, candlestick analysis, and momentum scalping.
+You are an elite, highly experienced technical analyst and binary options trading mentor specializing in BINARY AI SIGNAL price action, candlestick analysis, and momentum scalping.
 Analyze this candlestick chart screenshot with institutional precision.
 
 User Trade Configuration:
@@ -81,7 +81,7 @@ Carefully detect and examine from the image:
 4. RSI / Momentum / Stochastic: Read bottom sub-windows if visible (overbought >70, oversold <30, momentum shift, or divergence). If no indicator panel is visible, deduce momentum from candle size, velocity, and consecutive colors.
 5. Bollinger Bands: Are bands squeezing (low volatility consolidation prior to breakout) or expanding? Is price hugging the upper/lower band?
 6. Key Support & Resistance: State clear price levels or relative zones (e.g., "Round psychological level 1.08500", "Recent swing high resistance", "Triple bottom support").
-7. Actionable Trading Signal for Pocket Option:
+7. Actionable Trading Signal for Binary Options:
    - "UP" (Call / Buy) ONLY IF there is a high-probability bullish setup (e.g. bullish rejection at support, EMA 9 crossing above EMA 21, bullish engulfing in an uptrend).
    - "DOWN" (Put / Sell) ONLY IF there is a high-probability bearish setup (e.g. bearish rejection at resistance, shooting star/pin bar at upper band, EMA death cross).
    - "NO TRADE" IF the market is choppy, in an indecisive range, doji cluster, or conflicting signals. Preserving capital is top priority in binary options!
@@ -291,7 +291,7 @@ Carefully detect and examine from the image:
         analyzedAt: new Date().toISOString(),
         engine: 'Algorithmic Heuristic Fallback (Gemini Free Quota Limit)',
         warning: geminiError?.message?.includes('429')
-          ? 'Free tier daily Gemini rate limit reached. Analysis generated using built-in Pocket Option algorithmic engine.'
+          ? 'Free tier daily Gemini rate limit reached. Analysis generated using built-in BINARY AI SIGNAL algorithmic engine.'
           : undefined,
       });
     }
@@ -324,7 +324,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Pocket Option AI server running on http://0.0.0.0:${PORT}`);
+    console.log(`BINARY AI SIGNAL server running on http://0.0.0.0:${PORT}`);
   });
 }
 

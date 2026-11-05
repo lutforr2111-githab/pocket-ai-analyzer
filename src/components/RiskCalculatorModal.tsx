@@ -117,7 +117,7 @@ export const RiskCalculatorModal: React.FC<RiskCalculatorModalProps> = ({ isOpen
               <span>Martingale Warning (Never Multi-step Martingale!)</span>
             </div>
             <p className="text-[11px] text-rose-200/90 leading-relaxed">
-              Doubling down on consecutive losses in Pocket Option is the #1 reason traders lose accounts. Stick to fixed 1-2% stakes per signal. If you lose 3 trades in a row, take a break!
+              Doubling down on consecutive losses in Binary Options is the #1 reason traders lose accounts. Stick to fixed 1-2% stakes per signal. If you lose 3 trades in a row, take a break!
             </p>
           </div>
         </div>

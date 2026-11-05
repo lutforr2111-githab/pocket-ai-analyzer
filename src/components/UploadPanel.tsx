@@ -163,7 +163,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
               className="w-full bg-slate-950/80 border border-slate-700 hover:border-slate-600 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer font-medium"
             >
               <option value="Real Market">Real Market (Forex & Pairs)</option>
-              <option value="OTC Market">Pocket Option OTC Market</option>
+              <option value="OTC Market">Binary OTC Market</option>
               <option value="Crypto Pairs">Crypto OTC / Live (BTC, ETH)</option>
               <option value="Commodities">Commodities & Indices</option>
             </select>
@@ -181,7 +181,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
               onChange={(e) => setStrategy(e.target.value)}
               className="w-full bg-slate-950/80 border border-slate-700 hover:border-slate-600 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer font-medium"
             >
-              <option value="Scalping (1-3 min)">Pocket Option Scalping (1-3 min)</option>
+              <option value="Scalping (1-3 min)">Binary Scalping (1-3 min)</option>
               <option value="Support/Resistance Bounce">Support & Resistance Reversals</option>
               <option value="Trend Continuation">EMA Trend Continuation</option>
               <option value="Breakout Momentum">High-Momentum Breakout</option>
@@ -331,7 +331,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
             >
               <img
                 src={imageData}
-                alt="Pocket Option Chart"
+                alt="Binary AI Signal Chart"
                 style={{
                   transform: `scale(${zoomLevel})`,
                   transformOrigin: 'center center',

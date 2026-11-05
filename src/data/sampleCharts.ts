@@ -104,7 +104,7 @@ function createChartSvgDataUrl(options: {
     <text x="34" y="22" fill="#ffffff" font-size="14" font-weight="bold" font-family="sans-serif">${options.pair}</text>
     <rect x="130" y="8" width="60" height="20" rx="4" fill="#00e5a022" />
     <text x="142" y="22" fill="#00e5a0" font-size="12" font-weight="bold" font-family="sans-serif">${options.payout}</text>
-    <text x="210" y="22" fill="#8ca0ba" font-size="12" font-family="sans-serif">M${options.timeframe} Candlestick Chart | Pocket Option Real Market</text>
+    <text x="210" y="22" fill="#8ca0ba" font-size="12" font-family="sans-serif">M${options.timeframe} Candlestick Chart | BINARY AI SIGNAL Real Market</text>
     
     <!-- Price Scale Line -->
     <line x1="${width - 80}" y1="36" x2="${width - 80}" y2="330" stroke="#1c2d47" stroke-width="1" />
@@ -237,7 +237,7 @@ export const SAMPLE_CHART_PRESETS: SampleChartPreset[] = [
     scenarioDescription: 'Bullish breakout candle piercing horizontal resistance with wide body, RSI breaking above 60 with volume momentum.',
     expectedDirection: 'UP',
     imageDataUrl: createChartSvgDataUrl({
-      pair: 'BTC/USD OTC (Pocket Option)',
+      pair: 'BTC/USD OTC (BINARY AI SIGNAL)',
       payout: '+95%',
       timeframe: '5',
       supportLevel: 88500,
